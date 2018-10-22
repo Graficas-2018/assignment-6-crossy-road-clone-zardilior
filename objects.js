@@ -11,17 +11,18 @@ var objects ={
     tileDim:50,
     objects:[],
     collisions:[],
+    objectProportion:.8,
     // Character is made of  three boxes, jeans, a shirt and a head
     object:function(color,type){
         var obj = {};
-        obj.model = createCube(color);
+        obj.model = objects.createCube(color);
         obj.type = type;
-        obj.intersects = function(box){
-            return obj.model.intersectsBox(box);
+        obj.intersects = function(obj2){
+            return obj.model.intersectsBox(obj2.model);
         }
         obj.setPos = function(x,y){
-           obj.model.position.x = x;  
-           obj.model.position.y = y;  
+           obj.model.position.x = x*objects.tileDim;  
+           obj.model.position.y = y*objects.tileDim;  
         }
         if(!objects.objects['type'])
             objects.objects['type']=[];
@@ -29,7 +30,7 @@ var objects ={
         return obj;
     },
     floorObject:function(color,type){
-        obj = object(color,type);
+        obj = objects.object(color,type);
         obj.model.position.z = -objects.tileDim;
         return obj;
     },
@@ -46,7 +47,7 @@ var objects ={
             obj.setPos(x,y);
             return obj;
         }
-    }
+    },
     // Sections, 
     /** A section has many objects within it and one on each tile, a tile can be created and it will      *  return a constructor function to replicate that tile */
     section:function(objectMap,floorMap){
@@ -56,23 +57,23 @@ var objects ={
                 var x = i % objects.sectionWidth;
                 var y = Math.floor(i/objects.sectionWidth);
                 if(objectMap[i]!=""){
-                   group.add(objects[objectMap[i]](x,y)); 
+                   group.add(objects[objectMap[i]](x,y).model); 
                 }
-                group.add(objects[floorMap[i]](x,y));  
+                group.add(objects[floorMap[i]](x,y).model);  
             }
             scene.add(group);
             return group;
         }
     },
-    createCube: function(color){
-        var material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+    createCube: function(color,proportion=1){
+        var material = new THREE.MeshStandardMaterial({ color: color });
 
         // Create the cube geometry
-        var geometry = new THREE.CubeGeometry(2, 2, 2);
+        var dim = objects.tileDim*proportion;
+        var geometry = new THREE.CubeGeometry(dim,dim,dim);
 
         // And put the geometry and material together into a mesh
         var cube = new THREE.Mesh(geometry, material);
-        cube.setPosition(x,y);
         return cube;
     },
     createCollision: function(type1,type2,collideFunc){
@@ -89,12 +90,12 @@ var objects ={
     }
 }
 // We declare the objects constructors
-objects.character = generateObject(0xf1c27d,'character');
-objects.tree = generateObject(0x42f471,'tree');
-objects.vehicule = generateObject(0x42f471,'vehicule');
+objects.character = objects.generateObject(0xf1c27d,'character');
+objects.tree = objects.generateObject(0x42f471,'tree');
+objects.vehicule = objects.generateObject(0x42f471,'vehicule');
 
 // We declare the floor objects constructors
-objects.water = generateFloorObject(0x41e2f4,'water');
-objects.road = generateFloorObject(0xf7f9f9,'road');
-objects.grass = generateFloorObject(0x42f471,'grass');
-objects.logs = generateFloorObject(0xa36f3c,'logs');
+objects.water = objects.generateFloorObject(0x41e2f4,'water');
+objects.road = objects.generateFloorObject(0xf7f9f9,'road');
+objects.grass = objects.generateFloorObject(0x42f471,'grass');
+objects.log = objects.generateFloorObject(0xa36f3c,'logs');
