@@ -68,8 +68,8 @@ var app = {
             app.sectionConstructors[i](app.world);
             app.world.children[i].position.y -= 4*i*objects.tileDim;
         }
-        app.world.position.x -=d/1.5;
-        app.world.position.y -=d/5;
+        app.world.position.x -=objects.tileDim*4;
+        app.world.position.y -=objects.tileDim;
         app.scene.add(app.world);
 
         // We create a player and add controls to it
@@ -169,7 +169,9 @@ var app = {
     },
     characterAgainstTree:function(character,tree){
         console.log("tree");
-        app.snapToTile(app.character.model);
+        character.moveAnimation.stop();
+        character.cameraAnimation.stop();
+        app.snapToTile(character.model);
     },
     characterAgainstVehicule:function(character,vehicule){
         console.log("vehicule");
@@ -193,12 +195,14 @@ var app = {
         app.world.position.z = app.worldInitialPosition.z;
     },
     snapToTile(model){
-        app.character.moveAnimation.stop();
-        app.character.cameraAnimation.stop();
-        app.character.model.rotation.set(0,0,0);
-        model.position.x = Math.round(model.x/objects.tileDim)*objects.tileDim;
-        model.position.y = Math.round(model.y/objects.tileDim)*objects.tileDim;
-        //model.position.z = app.initialPosition.z;
+        model.rotation.set(0,0,0);
+
+        model.position.x = Math.round(model.position.x/objects.tileDim)*objects.tileDim;
+        model.position.y = Math.round(model.position.y/objects.tileDim)*objects.tileDim;
+        model.position.z = app.initialPosition.z;
+
+        app.world.position.x = Math.round(app.world.position.x/objects.tileDim)*objects.tileDim;
+        app.world.position.y = Math.round(app.world.position.y/objects.tileDim)*objects.tileDim;
     }
 }
 document.addEventListener('DOMContentLoaded',app.setup);
