@@ -13,9 +13,9 @@ var objects ={
     collisions:[],
     objectProportion:.8,
     // Character is made of  three boxes, jeans, a shirt and a head
-    object:function(color,type){
+    object:function(color,type,proportion=objects.objectProportion){
         var obj = {};
-        obj.model = objects.createCube(color);
+        obj.model = objects.createCube(color,proportion);
         obj.type = type;
         obj.intersects = function(obj2){
             return obj.model.intersectsBox(obj2.model);
@@ -27,10 +27,11 @@ var objects ={
         if(!objects.objects['type'])
             objects.objects['type']=[];
         objects.objects['type'].push(obj);
+
         return obj;
     },
     floorObject:function(color,type){
-        obj = objects.object(color,type);
+        obj = objects.object(color,type,1);
         obj.model.position.z = -objects.tileDim;
         return obj;
     },
@@ -92,7 +93,7 @@ var objects ={
 // We declare the objects constructors
 objects.character = objects.generateObject(0xf1c27d,'character');
 objects.tree = objects.generateObject(0x42f471,'tree');
-objects.vehicule = objects.generateObject(0x42f471,'vehicule');
+objects.vehicule = objects.generateObject(0xaa0000,'vehicule');
 
 // We declare the floor objects constructors
 objects.water = objects.generateFloorObject(0x41e2f4,'water');
