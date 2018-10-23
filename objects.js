@@ -18,7 +18,9 @@ var objects ={
         obj.model = objects.createCube(color,proportion);
         obj.type = type;
         obj.intersects = function(obj2){
-            return obj.model.intersectsBox(obj2.model);
+            obj.boundingBox = (new THREE.Box3()).setFromObject(obj.model);
+            obj2.boundingBox = (new THREE.Box3()).setFromObject(obj2.model);
+            return obj.boundingBox.intersectsBox(obj2.boundingBox);
         }
         obj.setPos = function(x,y){
            obj.model.position.x = x*objects.tileDim;  
@@ -78,12 +80,13 @@ var objects ={
         return cube;
     },
     createCollision: function(type1,type2,collideFunc){
-        var firstTypes = this.objects.filter((x)=>x.type==type1); 
-        var secondTypes = this.objects.filter((x)=>x.type==type2); 
+        var firstTypes = objects.objects[type1]; 
+        var secondTypes = objects.objects[type2]; 
         var func = function(){
             for(var i of firstTypes){
                 for(var j of secondTypes){
-                    collideFunc(i,j); 
+                    if(i.intersects(j))
+                        collideFunc(i,j); 
                 }
             }
         }    
