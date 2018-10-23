@@ -24,9 +24,9 @@ var objects ={
            obj.model.position.x = x*objects.tileDim;  
            obj.model.position.y = y*objects.tileDim;  
         }
-        if(!objects.objects['type'])
-            objects.objects['type']=[];
-        objects.objects['type'].push(obj);
+        if(!objects.objects[type])
+            objects.objects[type]=[];
+        objects.objects[type].push(obj);
 
         return obj;
     },
