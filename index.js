@@ -75,24 +75,30 @@ var app = {
     },
     onKeyDown:function(e){
         var values;
+        var rvalues;
         var cvalues;
         var target = app.character.model.position;
+        var rtarget = app.character.model.rotation;
         var target2 = app.world.position;
         if(e.key=="ArrowRight"){
             values = [{x:target.x},{x:target.x-50}];
             cvalues = [{x:target2.x},{x:target2.x+50}];
+            rvalues = [{y:rtarget.y},{y:rtarget.y-Math.PI/2}];
         }
         if(e.key=="ArrowLeft"){
             values = [{x:target.x},{x:target.x+50}];
             cvalues = [{x:target2.x},{x:target2.x-50}];
+            rvalues = [{y:rtarget.y},{y:rtarget.y+Math.PI/2}];
         }
         if(e.key=="ArrowUp"){
             values = [{y:target.y},{y:target.y-50}];
             cvalues = [{y:target2.y},{y:target2.y+50}];
+            rvalues = [{x:rtarget.x},{x:rtarget.x-Math.PI/2}];
         }
         if(e.key=="ArrowDown"){
             values = [{y:target.y},{y:target.y+50}];
             cvalues = [{y:target2.y},{y:target2.y-50}];
+            rvalues = [{x:rtarget.x},{x:rtarget.x+Math.PI/2}];
         }
         console.log(app.character.moveAnimation);
         if(target && values && !app.character.moveAnimation.running){
@@ -102,6 +108,14 @@ var app = {
                     keys:[0,1], 
                     values:values,
                     target:target
+                },{
+                    keys:[0,.5,1],
+                    values:[{z:target.z},{z:target.z+50},{z:target.z}],
+                    target:target
+                },{
+                    keys:[0,1],
+                    values:rvalues,
+                    target:rtarget
                 }],
                 loop:false,
                 duration:app.duration*1000,
@@ -116,6 +130,7 @@ var app = {
                 loop:false,
                 duration:app.duration*1000,
             });
+            // We add keyframe activity to our character on move
             app.character.cameraAnimation.start();
             app.character.moveAnimation.start();
         }
@@ -142,6 +157,5 @@ document.addEventListener('DOMContentLoaded',app.setup);
 // A die function and a reset function, dies also resets the score
 // We add collisions with vehicules as a way to die
 // We add collision with trees as stopping any keyframe activity
-// We add keyframe activity to our character on move
 // We register and replicate the sections
 // We create the win reset condition when the score % number of steps forward
