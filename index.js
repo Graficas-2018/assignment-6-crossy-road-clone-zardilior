@@ -3,7 +3,7 @@ sections[0] = {};
 sections[0].floor = [
     "grass","grass","grass","grass","grass","grass",
     "road","road","road","road","road","road",
-    "water","log","water","water","water","water",
+    "water","log","water","tree","water","water",
     "grass","grass","grass","grass","grass","grass"
 ];
 sections[0].object =  [
@@ -120,6 +120,8 @@ var app = {
             rvalues = [{x:rtarget.x},{x:rtarget.x+Math.PI/2}];
         }
         if(target && values && !app.character.moveAnimation.running){
+            app.hemisphereLight.intensity = (app.character.model.position.x % 200)/100 + .5;
+            app.hemisphereLight.intensity += (app.character.model.position.y % 100)/100;
             app.character.moveAnimation = new KF.KeyFrameAnimator;
             app.character.moveAnimation.init({
                 interps:[{
